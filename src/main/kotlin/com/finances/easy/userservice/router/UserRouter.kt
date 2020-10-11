@@ -3,18 +3,20 @@ package com.finances.easy.userservice.router
 import com.finances.easy.userservice.handler.UserHandler
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.web.reactive.function.server.*
-import org.springframework.web.reactive.function.server.RequestPredicates.*
+import org.springframework.http.MediaType
+import org.springframework.web.reactive.function.server.ServerRequest
+import org.springframework.web.reactive.function.server.router
 
 @Configuration
 class UserRouter {
     @Bean
-    fun userRoutes(handler: UserHandler): RouterFunction<ServerResponse> {
-        return RouterFunctions
-                .route(GET("/"), HandlerFunction { req: ServerRequest -> handler.list(req) })
-                .andRoute(POST("/"), HandlerFunction { req: ServerRequest -> handler.create(req) })
-                .andRoute(GET("/{id}"), HandlerFunction { req: ServerRequest -> handler.retrieve(req) })
-                .andRoute(PUT("/"), HandlerFunction { req: ServerRequest -> handler.update(req) })
-                .andRoute(DELETE("/{id}"), HandlerFunction { req: ServerRequest -> handler.delete(req) })
+    fun userRoutes(handler: UserHandler) = router {
+        accept(MediaType.APPLICATION_JSON).nest {
+            GET("/") { req -> handler.list(req) }
+            POST("/") { req -> handler.create(req) }
+            GET("/{id}") { req -> handler.retrieve(req) }
+            PUT("/") { req: ServerRequest -> handler.update(req) }
+            DELETE("/{id}") { req -> handler.delete(req) }
+        }
     }
 }

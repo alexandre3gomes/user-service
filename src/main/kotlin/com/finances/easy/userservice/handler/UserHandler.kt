@@ -7,19 +7,18 @@ import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.ServerResponse.notFound
 import org.springframework.web.reactive.function.server.ServerResponse.ok
-import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 @Component
 class UserHandler (private val userRepository: UserRepository){
     fun list(req: ServerRequest?): Mono<ServerResponse> {
-        return ok().body(userRepository.findAll(), Flux::class.java)
+        return ok().body(userRepository.findAll(), User::class.java)
     }
 
     fun create(req: ServerRequest): Mono<ServerResponse> {
         val user = req.bodyToMono(User::class.java)
         return user.flatMap { usr: User ->
-            ok().body(userRepository.save(usr), Mono::class.java)
+            ok().body(userRepository.save(usr), User::class.java)
         }
     }
 
@@ -30,13 +29,13 @@ class UserHandler (private val userRepository: UserRepository){
     fun update(req: ServerRequest): Mono<ServerResponse> {
         val user = req.bodyToMono(User::class.java)
         return user.flatMap { us: User ->
-            ok().body(userRepository.save(us), Mono::class.java).switchIfEmpty(notFound().build())
+            ok().body(userRepository.save(us), User::class.java).switchIfEmpty(notFound().build())
         }
     }
 
     fun delete(req: ServerRequest): Mono<ServerResponse> {
         val id = req.pathVariable("id")
         val deletedUser = userRepository.delete(User(id))
-        return ok().body(deletedUser, Mono::class.java)
+        return ok().body(deletedUser, User::class.java)
     }
 }
