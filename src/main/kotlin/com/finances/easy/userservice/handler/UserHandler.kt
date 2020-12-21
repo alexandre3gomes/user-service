@@ -2,12 +2,14 @@ package com.finances.easy.userservice.handler
 
 import com.finances.easy.userservice.dao.UserRepository
 import com.finances.easy.userservice.model.User
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.ServerResponse.notFound
 import org.springframework.web.reactive.function.server.ServerResponse.ok
 import reactor.core.publisher.Mono
+import java.security.Principal
 
 @Component
 class UserHandler (private val userRepository: UserRepository){
@@ -38,4 +40,10 @@ class UserHandler (private val userRepository: UserRepository){
         val deletedUser = userRepository.delete(User(id))
         return ok().body(deletedUser, User::class.java)
     }
+
+    fun getPrincipal(req: ServerRequest): Mono<ServerResponse> {
+        val principal = req.principal()
+        return ok().body(principal, Principal::class.java)
+    }
+
 }

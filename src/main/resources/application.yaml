@@ -3,3 +3,25 @@ server:
 spring:
   application:
     name: user-service
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://dev-2225315.okta.com/oauth2/default
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      username: root
+      password: toor
+      database: user
+      authentication-database: admin
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
